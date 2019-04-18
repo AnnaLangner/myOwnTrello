@@ -12,7 +12,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	};
 	//Generating templates
 	function generateTemplate(name, data, basicElement) {
-		var template = document.getElementById(name).innerHTML;
+		//var template = document.getElementById(name).innerHTML;
+
+		if (document.getElementById("name") != null) {
+    		var template = document.getElementById("name").innerHTML;
+		};
+
 		var element = document.createElement(basicElement || 'div');
 
 		Mustache.parse(template);
