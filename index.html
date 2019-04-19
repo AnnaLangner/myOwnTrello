@@ -23,13 +23,21 @@
   </script> -->
 
   <script id="column-template" type="x-tmpl-mustache">
-    <div class="column">
+    <div class="column" style='background-color: {{color}}'>
       <h2 class="column-title">{{ name }}</h2>
       <ul id={{ id }} class="column-card-list"></ul>
       <button class="btn-delete">X</button>
       <button class="add-card">Add a card</button>
     </div>
   </script>
+
+  <div class="overlay" id="overlay">
+    <div class="modal" id="modal">
+      <div class="content">
+        <p>You must enter the name of column: "To do" or "Doing" or "Done"</p>
+      </div>
+    </div>  
+  </div>
 
   <script id="card-template" type="x-tmpl-mustache">
     <div class="card">
