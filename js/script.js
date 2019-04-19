@@ -12,12 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	};
 	//Generating templates
 	function generateTemplate(name, data, basicElement) {
-		//var template = document.getElementById(name).innerHTML;
-
-		if (document.getElementById("name") != null) {
-    		var template = document.getElementById("name").innerHTML;
-		};
-
+		var template = document.getElementById(name).innerHTML;
 		var element = document.createElement(basicElement || 'div');
 
 		Mustache.parse(template);
@@ -27,13 +22,21 @@ document.addEventListener('DOMContentLoaded', function() {
 	};
 	//creation of the Column class
 	function Column(name) {
+		var backgroundColor = '';
+		if (name === 'To do') {
+			backgroundColor = '#f46666';
+		} if (name === 'Doing') {
+			backgroundColor = '#f7f259';
+		} if (name === 'Done') {
+			backgroundColor = '#7be55b';
+		}
 		var self = this;
 
 		this.id = randomString();
 		this.name = name;
-		this.element = generateTemplate('column-template ', {name: this.name, id: this.id});
+		this.element = generateTemplate('column-template', {name: this.name, id: this.id, color: backgroundColor});
 		//Delete and add the column after clicking the button
-		this.element.querySlelector('.column').addEventListener('click', function(event) {
+		this.element.querySelector('.column').addEventListener('click', function (event) {
 			if (event.target.classList.contains('btn-delete')) {
 				self.removeColumn();
 			} 
@@ -44,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	};
 	Column.prototype = {
 		addCard: function(card) {
-			this.element.querySlelector('ul').appendChild(card.element);
+			this.element.querySelector('ul').appendChild(card.element);
 		},
 		removeColumn: function() {
       		this.element.parentNode.removeChild(this.element);
@@ -58,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		this.description = description;
 		this.element = generateTemplate('card-template', { description: this.description }, 'li');
 
-		this.element.querySlelector('.card').addEventListener('click', function(event) {
+		this.element.querySelector('.card').addEventListener('click', function (event) {
 			event.stopPropagation();
 
 			if (event.target.classList.contains('btn-delete')) {
@@ -76,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		name: 'Kanban board',
 		addColumn: function (column) {
 			this.element.appendChild(column.element);
-			initStorable(column.id);
+			initSortable(column.id);
 		},
 		element: document.querySelector('#board .column-container')
 	};
@@ -92,8 +95,34 @@ document.addEventListener('DOMContentLoaded', function() {
 	//button click event for adding more columns
 	document.querySelector('#board .create-column').addEventListener('click', function() {
     	var name = prompt('Enter a column name');
-    	var column = new Column(name);
-    	board.addColumn(column);
+    	
+    	if (name === 'To do' || name === 'Doing' || name === 'Done') {
+    		var column = new Column(name);
+    		board.addColumn(column);
+    	} else {
+    		//modal
+    		document.querySelector('#overlay').classList.add('show');
+    		document.querySelector('#modal').classList.add('show');
+
+    		var hideModal = function(event) {
+    			event.preventDefault();
+    			document.querySelector('#overlay').classList.remove('show');
+    		}
+    		document.querySelector('#overlay').addEventListener('click', hideModal);
+
+    		document.addEventListener('keyup', function(e) {
+  				if(e.keyCode === 27) {
+    				hideModal();
+  				};
+			});
+    		var modals = document.querySelectorAll('.modal');
+    		for(var i = 0; i < modals.length; i++){
+				modals[i].addEventListener('click', function(event){
+					event.stopPropagation();
+				});
+			};
+    	}
+
 	});
 
 	//creating columns
