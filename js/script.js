@@ -22,13 +22,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	};
 	//creation of the Column class
 	function Column(name) {
-		var backgroundColor = '';
-		if (name === 'To do') {
-			backgroundColor = '#f46666';
-		} if (name === 'Doing') {
-			backgroundColor = '#f7f259';
-		} if (name === 'Done') {
-			backgroundColor = '#7be55b';
+		var colors = '0123456789FC';
+		var backgroundColor = '#';
+		for (var i = 0; i <6; i++) {
+			backgroundColor += colors[Math.floor(Math.random() * colors.length)];
 		}
 		var self = this;
 
@@ -96,16 +93,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	document.querySelector('#board .create-column').addEventListener('click', function() {
     	var name = prompt('Enter a column name');
     	
-    	if (name === 'To do' || name === 'Doing' || name === 'Done') {
+    	if (name !== null) {
     		var column = new Column(name);
     		board.addColumn(column);
-    	} else {
+    	} else if (isNaN(name) || name === '') {
     		//modal
     		document.querySelector('#overlay').classList.add('show');
     		document.querySelector('#modal').classList.add('show');
 
-    		var hideModal = function(event) {
-    			event.preventDefault();
+    		var hideModal = function() {
     			document.querySelector('#overlay').classList.remove('show');
     		}
     		document.querySelector('#overlay').addEventListener('click', hideModal);
