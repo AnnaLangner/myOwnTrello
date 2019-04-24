@@ -22,11 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	};
 	//creation of the Column class
 	function Column(name) {
-		var colors = '0123456789FC';
-		var backgroundColor = '#';
-		for (var i = 0; i <6; i++) {
-			backgroundColor += colors[Math.floor(Math.random() * colors.length)];
-		}
+		var colors = ['#0099CC', '#00CCFF', '#33FFFF', '#66FFFF', '#99FFFF', '#CCFFFF', '#FFFFFF', '#FF66CC', '#FF99FF', '#FFCCFF', '#009966', '#33CC99', '#66FFCC'];
+		var backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+		
 		var self = this;
 
 		this.id = randomString();
