@@ -93,10 +93,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	document.querySelector('#board .create-column').addEventListener('click', function() {
     	var name = prompt('Enter a column name');
     	
-    	if (name !== null) {
+    	if (isNaN(name)) {
     		var column = new Column(name);
     		board.addColumn(column);
-    	} else if (isNaN(name) || name === '') {
+    	} else {
     		//modal
     		document.querySelector('#overlay').classList.add('show');
     		document.querySelector('#modal').classList.add('show');
