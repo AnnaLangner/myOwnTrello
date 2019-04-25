@@ -23,13 +23,18 @@ document.addEventListener('DOMContentLoaded', function() {
 	//creation of the Column class
 	function Column(name) {
 		var colors = ['#0099CC', '#00CCFF', '#33FFFF', '#66FFFF', '#99FFFF', '#CCFFFF', '#FFFFFF', '#FF66CC', '#FF99FF', '#FFCCFF', '#009966', '#33CC99', '#66FFCC'];
-		var backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-		
+		//var backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+		for(var i = 0; i < colors.length; i++){
+			var backgroundColor = colors[i % colors.length]; 
+		}  
+  
+	
 		var self = this;
 
 		this.id = randomString();
 		this.name = name;
 		this.element = generateTemplate('column-template', {name: this.name, id: this.id, color: backgroundColor});
+		
 		//Delete and add the column after clicking the button
 		this.element.querySelector('.column').addEventListener('click', function (event) {
 			if (event.target.classList.contains('btn-delete')) {
