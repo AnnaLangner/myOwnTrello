@@ -21,20 +21,34 @@ document.addEventListener('DOMContentLoaded', function() {
 		return element;
 	};
 	//creation of the Column class
+			
+	function randomColors() {
+			var colors = ['#0099CC', '#00CCFF', '#33FFFF', '#66FFFF', '#99FFFF', '#CCFFFF', '#FFFFFF', '#FF66CC', '#FF99FF', '#FFCCFF', '#009966', '#33CC99', '#66FFCC'];
+  			var columns = document.querySelectorAll('.column');
+
+  			for( var i = 0; i < columns.length; i++ ) {
+  				var backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+  				
+  				while (i > 0 && backgroundColor == columns[i-1].color) {
+  					backgroundColor = colors[Math.floor(Math.random() * colors.length)];  					
+  				}
+  				columns[i].style["background-color"] = backgroundColor;
+  				columns[i].color = backgroundColor;
+  			}
+		}
+
 	function Column(name) {
-		var colors = ['#0099CC', '#00CCFF', '#33FFFF', '#66FFFF', '#99FFFF', '#CCFFFF', '#FFFFFF', '#FF66CC', '#FF99FF', '#FFCCFF', '#009966', '#33CC99', '#66FFCC'];
-		//var backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-		for(var i = 0; i < colors.length; i++){
-			var backgroundColor = colors[i % colors.length]; 
-		}  
-  
-	
+		
+		
+		
+		// var colors = ['#0099CC', '#00CCFF', '#33FFFF', '#66FFFF', '#99FFFF', '#CCFFFF', '#FFFFFF', '#FF66CC', '#FF99FF', '#FFCCFF', '#009966', '#33CC99', '#66FFCC'];
+		var backgroundColor = '#FFFFFF';
+		
 		var self = this;
 
 		this.id = randomString();
 		this.name = name;
 		this.element = generateTemplate('column-template', {name: this.name, id: this.id, color: backgroundColor});
-		
 		//Delete and add the column after clicking the button
 		this.element.querySelector('.column').addEventListener('click', function (event) {
 			if (event.target.classList.contains('btn-delete')) {
@@ -51,6 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		},
 		removeColumn: function() {
       		this.element.parentNode.removeChild(this.element);
+      		randomColors();
     	}
 	};
 	//creation of the Card class
@@ -80,6 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		addColumn: function (column) {
 			this.element.appendChild(column.element);
 			initSortable(column.id);
+			randomColors();
 		},
 		element: document.querySelector('#board .column-container')
 	};

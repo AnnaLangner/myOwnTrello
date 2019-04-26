@@ -10,7 +10,7 @@ body .board .create-column { display: inline-block; padding: 10px 30px; margin-b
 
 body .board .column-container { margin: 0 auto; display: -ms-flexbox; display: flex; -ms-flex-pack: center; justify-content: center; -ms-flex-wrap: wrap; flex-wrap: wrap; }
 
-body .column { padding: 50px; -ms-flex: 1; flex: 1; width: 300px; border: 3px solid #9e9191; }
+body .column { padding: 50px; -ms-flex: 1; flex: 1; width: 300px; }
 
 body .column .column-card-list { -ms-flex: 1; flex: 1; }
 
