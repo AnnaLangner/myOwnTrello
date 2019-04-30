@@ -21,27 +21,38 @@ document.addEventListener('DOMContentLoaded', function() {
 		return element;
 	};
 	//creation of the Column class
+	function convertHex(hex){
+		hex = hex.replace('#','');
+		var g= parseInt(hex.substring(0,2), 16);
+		var r= parseInt(hex.substring(2,4), 16);
+		var b = parseInt(hex.substring(4,6), 16);
+
+		var result = 'rgb('+r+', '+g+', '+b+')';
+		return result;
+	}
 			
 	function randomColors() {
 			var colors = ['#0099CC', '#00CCFF', '#33FFFF', '#66FFFF', '#99FFFF', '#CCFFFF', '#FFFFFF', '#FF66CC', '#FF99FF', '#FFCCFF', '#009966', '#33CC99', '#66FFCC'];
   			var columns = document.querySelectorAll('.column');
 
   			for( var i = 0; i < columns.length; i++ ) {
-  				var backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-  				
-  				while (i > 0 && backgroundColor == columns[i-1].style["background-color"]) {
-  					backgroundColor = colors[Math.floor(Math.random() * colors.length)];  					
-  				}
-  				columns[i].style["background-color"] = backgroundColor;
-  				columns[i].color = backgroundColor;
-  			}
+				var backgroundColor = convertHex(colors[Math.floor(Math.random() * colors.length)])
+
+				console.log("Obrót pętli: " + i, "Wylosowany kolor: ", backgroundColor);
+				if(i > 0) console.log("Kolor elementu obok: " + columns[i-1].style["background"]);
+
+					while (i > 0 && backgroundColor == columns[i-1].style["background"]) {
+					console.log((i-1) + " ma taki sam kolor jak " + i)
+						backgroundColor = convertHex(colors[Math.floor(Math.random() * colors.length)]);
+						console.log("Nowy kolor - " + backgroundColor)
+					}
+
+				console.log("Kolor przed ustawieniem - " + backgroundColor)
+				columns[i].style["background"] = backgroundColor;
+			}
 		}
 
 	function Column(name) {
-		
-		
-		
-		// var colors = ['#0099CC', '#00CCFF', '#33FFFF', '#66FFFF', '#99FFFF', '#CCFFFF', '#FFFFFF', '#FF66CC', '#FF99FF', '#FFCCFF', '#009966', '#33CC99', '#66FFCC'];
 		var backgroundColor = '#FFFFFF';
 		
 		var self = this;
