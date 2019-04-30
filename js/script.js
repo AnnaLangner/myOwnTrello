@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
   			for( var i = 0; i < columns.length; i++ ) {
   				var backgroundColor = colors[Math.floor(Math.random() * colors.length)];
   				
-  				while (i > 0 && backgroundColor == columns[i-1].color) {
+  				while (i > 0 && backgroundColor == columns[i-1].style["background-color"]) {
   					backgroundColor = colors[Math.floor(Math.random() * colors.length)];  					
   				}
   				columns[i].style["background-color"] = backgroundColor;
