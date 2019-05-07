@@ -106,6 +106,22 @@ document.addEventListener('DOMContentLoaded', function() {
     				var card = new Card(resp.id, cardName);
     				self.addCard(card);			
 				});
+
+				data.append('id', self.id);
+
+				//var self = this;
+				fetch(baseUrl + '/card/' + self.id, {
+					method: 'PUT',
+					headers: myHeaders,
+					body: data,
+				})
+				.then(function(res) {
+    			  	return res.json();
+    			})
+    			.then(function(resp) {
+    				var card = new Card(resp.id, cardName);
+    				self.element.parentNode.addCard(self.element);			
+				});
 			};
 		})
 	};
@@ -215,5 +231,44 @@ document.addEventListener('DOMContentLoaded', function() {
 				});
 			};
     	}
+    	data.append('id', self.id);
+
+    	var self = this;
+    	if (isNaN(name)) {
+    		fetch(baseUrl + '/column/' + self.id, {
+            	method: 'PUT',
+            	headers: myHeaders,
+            	body: data,
+          	})
+          	.then(function(resp) {
+            	return resp.json();
+          	})
+          	.then(function(resp) {
+            	var column = new Column(resp.id, name);
+            	self.element.parentNode.addColumn(cself.element);
+          	});
+        } else {
+    		//modal
+    		document.querySelector('#overlay').classList.add('show');
+    		document.querySelector('#modal').classList.add('show');
+
+    		var hideModal = function() {
+    			document.querySelector('#overlay').classList.remove('show');
+    		}
+    		document.querySelector('#overlay').addEventListener('click', hideModal);
+
+    		document.addEventListener('keyup', function(e) {
+  				if(e.keyCode === 27) {
+    				hideModal();
+  				};
+			});
+    		var modals = document.querySelectorAll('.modal');
+    		for(var i = 0; i < modals.length; i++){
+				modals[i].addEventListener('click', function(event){
+					event.stopPropagation();
+				});
+			};
+    	}
+
 	});	
 });
