@@ -1,49 +1,37 @@
 'use strict'
-
-var baseUrl = 'https://kodilla.com/pl/bootcamp-api';
-var myHeaders = {
-  'X-Client-Id': 3928,
-  'X-Auth-Token': '0ea2f56d8f2dfe1f0937c687e65bfc4b'
-};
-
-//Adding a function that polls the server about the array resource
-fetch(baseUrl + '/board', { headers: myHeaders })
-	.then(function(resp) {
-		return resp.json();
-	})
-	.then(function(resp) {
-		setupColumns(resp.columns);
-	});
-//creation of the Column
-function setupColumns(columns) {
-  	columns.forEach(function(column) {
-		var col = new Column(column.id, column.name);
-      	board.addColumn(col);
-      	setupCards(col, column.cards);
-  	});
-};
-
-////creation of the Card
-function setupCards(col, cards) {
-	cards.forEach(function (card) {
-    	var cardObj = new Card(card.id, card.name);
-  		col.addCard(cardObj);
-  		todoColumn.addCard(card1);
-		doingColumn.addCard(card2);
-	});
-}
-
 document.addEventListener('DOMContentLoaded', function() {
-	/*generating an id that consists of 10 randomly selected characters
-	function randomString() {
-    	var chars = '0123456789abcdefghiklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXTZ';
-    	var str = '';
-    	for (var i = 0; i < 10; i++) {
-    	    str += chars[Math.floor(Math.random() * chars.length)];
-    	};
-    	return str;
+
+	var baseUrl = 'https://cors-anywhere.herokuapp.com/https://kodilla.com/pl/bootcamp-api';
+	var myHeaders = {
+		'X-Client-Id': 3928,
+		'X-Auth-Token': '0ea2f56d8f2dfe1f0937c687e65bfc4b'
 	};
-	*/
+
+	//Adding a function that polls the server about the array resource
+	fetch(baseUrl + '/board', { headers: myHeaders })
+		.then(function(resp) {
+			return resp.json();
+		})
+		.then(function(resp) {
+			setupColumns(resp.columns);
+		});
+	//creation of the Column
+	function setupColumns(columns) {
+	  	columns.forEach(function(column) {
+			var col = new Column(column.id, column.name);
+	      	board.addColumn(col);
+	      	setupCards(col, column.cards);
+	  	});
+	};
+
+	////creation of the Card
+	function setupCards(col, cards) {
+		cards.forEach(function (card) {
+	    	var cardObj = new Card(card.id, card.name);
+	  		col.addCard(cardObj);
+		});
+	}
+	
 	//Generating templates
 	function generateTemplate(name, data, basicElement) {
 		var template = document.getElementById(name).innerHTML;
@@ -118,6 +106,8 @@ document.addEventListener('DOMContentLoaded', function() {
     				var card = new Card(resp.id, cardName);
     				self.addCard(card);			
 				});
+			};
+		})
 	};
 
 	Column.prototype = {
@@ -136,13 +126,12 @@ document.addEventListener('DOMContentLoaded', function() {
     	}
 	};
 	//creation of the Card class
-	function Card(id, name) {
+	function Card(id, description) {
 		var self = this;
 
 		this.id = id;
-		this.name = name || 'No name given';
 		this.description = description;
-		this.element = generateTemplate('card-template', { description: this.name }, 'li');
+		this.element = generateTemplate('card-template', { description: this.description }, 'li');
 
 		this.element.querySelector('.card').addEventListener('click', function (event) {
 			event.stopPropagation();
@@ -190,8 +179,18 @@ document.addEventListener('DOMContentLoaded', function() {
     	var data = new FormData();
     	
     	if (isNaN(name)) {
-    		var column = new Column(name);
-    		board.addColumn(column);
+    		fetch(baseUrl + '/column', {
+            	method: 'POST',
+            	headers: myHeaders,
+            	body: data,
+          	})
+          	.then(function(resp) {
+            	return resp.json();
+          	})
+          	.then(function(resp) {
+            	var column = new Column(resp.id, name);
+            	board.addColumn(column);
+          	});
     	} else {
     		//modal
     		document.querySelector('#overlay').classList.add('show');
@@ -214,46 +213,5 @@ document.addEventListener('DOMContentLoaded', function() {
 				});
 			};
     	}
-
-	});
-
-	//creating columns
-	var todoColumn = new Column('To do');
-	var doingColumn = new Column('Doing');
-	var doneColumn = new Column('Done');
-
-	//adding columns to the board
-	board.addColumn(todoColumn);
-	board.addColumn(doingColumn);
-	board.addColumn(doneColumn);
-
-	//creating cards
-	var card1 = new Card('New task');
-	var card2 = new Card('Create kanban boards');
-
-	//adding cards to columns
-	todoColumn.addCard(card1);
-	doingColumn.addCard(card2);
+	});	
 });
-/*
-//creation of the Board class
-	function Board(name) {
-		var self = this;
-
-		this.id = randomString();
-		this.name = name;
-		this.element = generateTemplate('board-template ', {name: this.name, id: this.id});
-		//Delete and add the board after clicking the button
-		this.element.querySlelector('.board').addEventListener('click', function(event) {
-			
-			if (event.target.classList.contains('create-column')) {
-				self.addBoard(new Board(prompt("Enter the name of the board")));
-			}
-		});
-	};
-	Board.prototype = {
-		addBoard: function(board) {
-			this.element.querySlelector('div').appendChild(board.element);
-		},
-	};
-*/
