@@ -1,7 +1,40 @@
 'use strict'
 
+var baseUrl = 'https://kodilla.com/pl/bootcamp-api';
+var myHeaders = {
+  'X-Client-Id': 3928,
+  'X-Auth-Token': '0ea2f56d8f2dfe1f0937c687e65bfc4b'
+};
+
+//Adding a function that polls the server about the array resource
+fetch(baseUrl + '/board', { headers: myHeaders })
+	.then(function(resp) {
+		return resp.json();
+	})
+	.then(function(resp) {
+		setupColumns(resp.columns);
+	});
+//creation of the Column
+function setupColumns(columns) {
+  	columns.forEach(function(column) {
+		var col = new Column(column.id, column.name);
+      	board.addColumn(col);
+      	setupCards(col, column.cards);
+  	});
+};
+
+////creation of the Card
+function setupCards(col, cards) {
+	cards.forEach(function (card) {
+    	var cardObj = new Card(card.id, card.name);
+  		col.addCard(cardObj);
+  		todoColumn.addCard(card1);
+		doingColumn.addCard(card2);
+	});
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-	//generating an id that consists of 10 randomly selected characters
+	/*generating an id that consists of 10 randomly selected characters
 	function randomString() {
     	var chars = '0123456789abcdefghiklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXTZ';
     	var str = '';
@@ -10,6 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
     	};
     	return str;
 	};
+	*/
 	//Generating templates
 	function generateTemplate(name, data, basicElement) {
 		var template = document.getElementById(name).innerHTML;
@@ -52,13 +86,13 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		}
 
-	function Column(name) {
+	function Column(id, name) {
 		var backgroundColor = '#FFFFFF';
 		
 		var self = this;
 
-		this.id = randomString();
-		this.name = name;
+		this.id = id;
+    	this.name = name || 'No name given';
 		this.element = generateTemplate('column-template', {name: this.name, id: this.id, color: backgroundColor});
 		//Delete and add the column after clicking the button
 		this.element.querySelector('.column').addEventListener('click', function (event) {
@@ -66,26 +100,49 @@ document.addEventListener('DOMContentLoaded', function() {
 				self.removeColumn();
 			} 
 			if (event.target.classList.contains('add-card')) {
-				self.addCard(new Card(prompt("Enter the name of the card")));
-			}
-		});
+				var cardName = prompt("Enter the name of the card");
+				event.preventDefault();
+				var data = new FormData();
+				data.append('name', cardName);
+				data.append('bootcamp_kanban_column_id', self.id);
+
+				fetch(baseUrl + '/card', {
+      				method: 'POST',
+      				headers: myHeaders,
+    				body: data,      				
+    			})
+    			.then(function(res) {
+    			  	return res.json();
+    			})
+    			.then(function(resp) {
+    				var card = new Card(resp.id, cardName);
+    				self.addCard(card);			
+				});
 	};
+
 	Column.prototype = {
 		addCard: function(card) {
 			this.element.querySelector('ul').appendChild(card.element);
 		},
 		removeColumn: function() {
-      		this.element.parentNode.removeChild(this.element);
-      		randomColors();
+      		var self = this;
+			fetch(baseUrl + '/column/' + self.id, { method: 'DELETE', headers: myHeaders })
+    			.then(function(resp) {
+    				return resp.json();
+    			})
+    			.then(function(resp) {
+    				self.element.parentNode.removeChild(self.element);
+    			});
     	}
 	};
 	//creation of the Card class
-	function Card(description) {
+	function Card(id, name) {
 		var self = this;
 
-		this.id = randomString();
+		this.id = id;
+		this.name = name || 'No name given';
 		this.description = description;
-		this.element = generateTemplate('card-template', { description: this.description }, 'li');
+		this.element = generateTemplate('card-template', { description: this.name }, 'li');
 
 		this.element.querySelector('.card').addEventListener('click', function (event) {
 			event.stopPropagation();
@@ -97,7 +154,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	};
 	Card.prototype = {
 		removeCard: function() {
-			this.element.parentNode.removeChild(this.element);
+			var self = this;
+
+			fetch(baseUrl + '/card/' + self.id, { method: 'DELETE', headers: myHeaders })
+    			.then(function(resp) {
+    			  	return resp.json();
+    			})
+    			.then(function(resp) {
+    			  	self.element.parentNode.removeChild(self.element);
+    			})
     	}
 	};
 	//creating an array object
@@ -122,6 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	//button click event for adding more columns
 	document.querySelector('#board .create-column').addEventListener('click', function() {
     	var name = prompt('Enter a column name');
+    	var data = new FormData();
     	
     	if (isNaN(name)) {
     		var column = new Column(name);
