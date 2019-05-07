@@ -175,8 +175,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	//button click event for adding more columns
 	document.querySelector('#board .create-column').addEventListener('click', function() {
+    	
     	var name = prompt('Enter a column name');
     	var data = new FormData();
+    	data.append('name', name);
     	
     	if (isNaN(name)) {
     		fetch(baseUrl + '/column', {
