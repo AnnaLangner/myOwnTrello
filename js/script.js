@@ -60,16 +60,9 @@ document.addEventListener('DOMContentLoaded', function() {
   			for( var i = 0; i < columns.length; i++ ) {
 				var backgroundColor = convertHex(colors[Math.floor(Math.random() * colors.length)])
 
-				console.log("Obrót pętli: " + i, "Wylosowany kolor: ", backgroundColor);
-				if(i > 0) console.log("Kolor elementu obok: " + columns[i-1].style["background"]);
-
-					while (i > 0 && backgroundColor == columns[i-1].style["background"]) {
-					console.log((i-1) + " ma taki sam kolor jak " + i)
-						backgroundColor = convertHex(colors[Math.floor(Math.random() * colors.length)]);
-						console.log("Nowy kolor - " + backgroundColor)
-					}
-
-				console.log("Kolor przed ustawieniem - " + backgroundColor)
+				while (i > 0 && backgroundColor == columns[i-1].style["background"]) {
+					backgroundColor = convertHex(colors[Math.floor(Math.random() * colors.length)]);
+				}
 				columns[i].style["background"] = backgroundColor;
 			}
 		}
@@ -82,6 +75,34 @@ document.addEventListener('DOMContentLoaded', function() {
 		this.id = id;
     	this.name = name || 'No name given';
 		this.element = generateTemplate('column-template', {name: this.name, id: this.id, color: backgroundColor});
+//Po kliknieciu powinien pozwalac na zmiane nazwy (np. za pomocą prompta) i wysyłać żąanie Ajaxcowe do serwera
+//Czy to będzie w tym miejscu??
+		function Rename() {
+			var columnName = prompt('Enter a new name:', '');
+
+			if (columnName != null) {
+				alert(columnName);
+			} else {
+				alert('You canceled the action');
+			}
+		}
+		document.querySelectorAll('.btn-rename'/* czy ('#prompt')*/).addEventListener('click', function() {
+			Rename();
+			data.append('name', cardName);
+
+			fetch(baseUrl + '/card' + self.id, {
+				method: 'PUT',
+				headers: myHeaders,
+				body:data,
+			})
+			.then(function(res) {
+    		  	return res.json();
+    		})
+    		.then(function(resp) {
+    			var card = new Card(resp.id, cardName); //Nie wiem co tu wpisać :(
+    		});
+		});
+
 		//Delete and add the column after clicking the button
 		this.element.querySelector('.column').addEventListener('click', function (event) {
 			if (event.target.classList.contains('btn-delete')) {
