@@ -53,7 +53,7 @@ body {
 		.btn-delete {
 			width: 20px;
 			height: 20px;
-			border-radius: 50%;
+			border-radius: 4px;
 			color: #f9f7f4;
 			background-color: #f29d15;
 			border: 3px solid #db8804;
@@ -67,13 +67,37 @@ body {
 			border: 3px solid #db8804;
 			border-radius: 4px;
 		}
+		.btn-rename {			
+			width: 120px;
+			height: 30px;
+			color: #f9f7f4;
+			background-color: #f29d15;
+			border: 3px solid #db8804;
+			border-radius: 4px;
+		}
+		
 	}
 	.card {
 		.card-description {
 
 		}
 		.btn-delete {
+			background-color: #FFCC99;
+			color: #000;
 		
+		}
+		.btn-rename {
+			width: 80px;
+			background-color: #FFCC99;
+			color: #000;
+		}
+		.btn-transfer {
+			width: 80px;
+			height: 30px;
+			color: #000;
+			background-color: #FFCC99;
+			border: 3px solid #db8804;
+			border-radius: 4px;
 		}
 	}
 	.overlay {
