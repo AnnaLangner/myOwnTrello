@@ -2,6 +2,7 @@
 document.addEventListener('DOMContentLoaded', function() {
 
 	var baseUrl = 'https://cors-anywhere.herokuapp.com/https://kodilla.com/pl/bootcamp-api';
+	var url = 'https://kodilla.com/pl/bootcamp-api';
 	var myHeaders = {
 		'X-Client-Id': 3928,
 		'X-Auth-Token': '0ea2f56d8f2dfe1f0937c687e65bfc4b'
@@ -75,33 +76,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		this.id = id;
     	this.name = name || 'No name given';
 		this.element = generateTemplate('column-template', {name: this.name, id: this.id, color: backgroundColor});
-//Po kliknieciu powinien pozwalac na zmiane nazwy (np. za pomocą prompta) i wysyłać żąanie Ajaxcowe do serwera
-//Czy to będzie w tym miejscu??
-		function Rename() {
-			var columnName = prompt('Enter a new name:', '');
-
-			if (columnName != null) {
-				alert(columnName);
-			} else {
-				alert('You canceled the action');
-			}
-		}
-		document.querySelectorAll('.btn-rename'/* czy ('#prompt')*/).addEventListener('click', function() {
-			Rename();
-			data.append('name', cardName);
-
-			fetch(baseUrl + '/card' + self.id, {
-				method: 'PUT',
-				headers: myHeaders,
-				body:data,
-			})
-			.then(function(res) {
-    		  	return res.json();
-    		})
-    		.then(function(resp) {
-    			var card = new Card(resp.id, cardName); //Nie wiem co tu wpisać :(
-    		});
-		});
 
 		//Delete and add the column after clicking the button
 		this.element.querySelector('.column').addEventListener('click', function (event) {
@@ -127,11 +101,34 @@ document.addEventListener('DOMContentLoaded', function() {
     				var card = new Card(resp.id, cardName);
     				self.addCard(card);			
 				});
-			};
+			}
+			if (event.target.classList.contains('btn-rename')) {
+				var columnName = prompt("Enter a new name");
+				event.preventDefault();
+				var data = new FormData();
+				data.append('name', columnName);
+				data.append('bootcamp_kanban_column_id', self.id);
+
+				fetch(baseUrl + '/column/' + self.id, {
+      				method: 'PUT',
+      				headers: myHeaders,
+    				body: data,      				
+    			})
+    			.then(function(res) {
+    			  	return res.json();
+    			})
+    			.then(function(resp) {
+    				var column = new Column(resp.id, columnName);
+    				self.addColumn(column);			
+				});
+			}
 		})
 	};
 
 	Column.prototype = {
+		addColumn: function(column) {
+			this.element.querySelector('h2').appendChild(column.element);
+		},
 		addCard: function(card) {
 			this.element.querySelector('ul').appendChild(card.element);
 		},
@@ -160,9 +157,32 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (event.target.classList.contains('btn-delete')) {
 				self.removeCard();
 			}
+			if (event.target.classList.contains('btn-rename')) {
+				var cardName = prompt("Enter a new name");
+				event.preventDefault();
+				var data = new FormData();
+				data.append('name', cardName);
+				data.append('bootcamp_kanban_card_id', self.id);
+
+				fetch(baseUrl + '/card/' + self.id, {
+      				method: 'PUT',
+      				headers: myHeaders,
+    				body: data,      				
+    			})
+    			.then(function(res) {
+    			  	return res.json();
+    			})
+    			.then(function(resp) {
+    				var card = new Card(resp.id, cardName);
+    				self.addCard(card);			
+				});
+			}
 		});
 	};
 	Card.prototype = {
+		addCard: function(card) {
+			this.element.querySelector('ul').appendChild(card.element);
+		},
 		removeCard: function() {
 			var self = this;
 
