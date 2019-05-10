@@ -107,7 +107,6 @@ document.addEventListener('DOMContentLoaded', function() {
 				event.preventDefault();
 				var data = new FormData();
 				data.append('name', columnName);
-				data.append('bootcamp_kanban_column_id', self.id);
 
 				fetch(baseUrl + '/column/' + self.id, {
       				method: 'PUT',
@@ -119,15 +118,15 @@ document.addEventListener('DOMContentLoaded', function() {
     			})
     			.then(function(resp) {
     				var column = new Column(resp.id, columnName);
-    				self.addColumn(column);			
+    				self.renameColumn(column); 		
 				});
 			}
 		})
 	};
 
 	Column.prototype = {
-		addColumn: function(column) {
-			this.element.querySelector('h2').appendChild(column.element);
+		renameColumn: function(column) {
+			this.element = generateTemplate('column-template', {name: this.name, id: this.id, color: backgroundColor});
 		},
 		addCard: function(card) {
 			this.element.querySelector('ul').appendChild(card.element);
@@ -162,8 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				event.preventDefault();
 				var data = new FormData();
 				data.append('name', cardName);
-				data.append('bootcamp_kanban_card_id', self.id);
-
+				
 				fetch(baseUrl + '/card/' + self.id, {
       				method: 'PUT',
       				headers: myHeaders,
@@ -174,13 +172,13 @@ document.addEventListener('DOMContentLoaded', function() {
     			})
     			.then(function(resp) {
     				var card = new Card(resp.id, cardName);
-    				self.addCard(card);			
+    				self.renameCard(card); 		
 				});
 			}
 		});
 	};
 	Card.prototype = {
-		addCard: function(card) {
+		renameCard: function(card) {
 			this.element.querySelector('ul').appendChild(card.element);
 		},
 		removeCard: function() {
