@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	function Column(id, name) {
 		var backgroundColor = '#FFFFFF';
-		
+
 		var self = this;
 
 		this.id = id;
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		this.element.querySelector('.column').addEventListener('click', function (event) {
 			if (event.target.classList.contains('btn-delete')) {
 				self.removeColumn();
-			} 
+			}
 			if (event.target.classList.contains('add-card')) {
 				var cardName = prompt("Enter the name of the card");
 				event.preventDefault();
@@ -92,14 +92,14 @@ document.addEventListener('DOMContentLoaded', function() {
 				fetch(baseUrl + '/card', {
       				method: 'POST',
       				headers: myHeaders,
-    				body: data,      				
+    				body: data,
     			})
     			.then(function(res) {
     			  	return res.json();
     			})
     			.then(function(resp) {
     				var card = new Card(resp.id, cardName);
-    				self.addCard(card);			
+    				self.addCard(card);
 				});
 			}
 			if (event.target.classList.contains('btn-rename')) {
@@ -111,14 +111,16 @@ document.addEventListener('DOMContentLoaded', function() {
 				fetch(baseUrl + '/column/' + self.id, {
       				method: 'PUT',
       				headers: myHeaders,
-    				body: data,      				
+    					body: JSON.stringify({
+								name: columnName
+							}),
     			})
     			.then(function(res) {
     			  	return res.json();
     			})
     			.then(function(resp) {
     				var column = new Column(resp.id, columnName);
-    				self.renameColumn(column); 		
+    				self.renameColumn(column);
 				});
 			}
 		})
@@ -126,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	Column.prototype = {
 		renameColumn: function(column) {
-			this.element = generateTemplate('column-template', {name: this.name, id: this.id, color: backgroundColor});
+			this.element = generateTemplate('column-template', {name: this.name, id: this.id});
 		},
 		addCard: function(card) {
 			this.element.querySelector('ul').appendChild(card.element);
@@ -148,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		this.id = id;
 		this.description = description;
-		this.element = generateTemplate('card-template', { description: this.description }, 'li');
+		this.element = generateTemplate('card-template', { description: this.description, id: this.id }, 'li');
 
 		this.element.querySelector('.card').addEventListener('click', function (event) {
 			event.stopPropagation();
@@ -161,18 +163,20 @@ document.addEventListener('DOMContentLoaded', function() {
 				event.preventDefault();
 				var data = new FormData();
 				data.append('name', cardName);
-				
+
 				fetch(baseUrl + '/card/' + self.id, {
       				method: 'PUT',
       				headers: myHeaders,
-    				body: data,      				
+							body: JSON.stringify({
+								name: cardName,
+								bootcamp_kanban_column_id: self.element.parentNode.id
+							}),
     			})
     			.then(function(res) {
     			  	return res.json();
     			})
     			.then(function(resp) {
-    				var card = new Card(resp.id, cardName);
-    				self.renameCard(card); 		
+    				self.element.innerHTML = generateTemplate('card-template', { description: cardName, id: self.id }, 'li').innerHTML;
 				});
 			}
 		});
@@ -208,7 +212,22 @@ document.addEventListener('DOMContentLoaded', function() {
 		var el = document.getElementById(id);
 		var sortable = Sortable.create(el, {
     		group: 'kanban',
-    		sort: true
+    		sort: true,
+    			onAdd: function (event) {
+					var cardName = event.item.querySelector('.card-description').innerText
+					var columnId = event.target.id
+					var cardId = event.item.querySelector('.card').id;
+
+					fetch(baseUrl + '/card/' + cardId, {
+	            	method: 'PUT',
+	            	headers: myHeaders,
+	            	body: JSON.stringify({
+									bootcamp_kanban_column_id: columnId,
+									name: cardName
+								}),
+	          	})
+
+				},
   		});
 	};
 
