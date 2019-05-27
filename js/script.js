@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 document.addEventListener('DOMContentLoaded', function() {
 
 	var baseUrl = 'https://cors-anywhere.herokuapp.com/https://kodilla.com/pl/bootcamp-api';
@@ -23,8 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	      	board.addColumn(col);
 	      	setupCards(col, column.cards);
 	  	});
-	};
-
+	}
 	////creation of the Card
 	function setupCards(col, cards) {
 		cards.forEach(function (card) {
@@ -42,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		element.innerHTML = Mustache.render(template, data);
 
 		return element;
-	};
+	}
 	//creation of the Column class
 	function convertHex(hex){
 		hex = hex.replace('#','');
@@ -59,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
   			var columns = document.querySelectorAll('.column');
 
   			for( var i = 0; i < columns.length; i++ ) {
-				var backgroundColor = convertHex(colors[Math.floor(Math.random() * colors.length)])
+				var backgroundColor = convertHex(colors[Math.floor(Math.random() * colors.length)]);
 
 				while (i > 0 && backgroundColor == columns[i-1].style["background"]) {
 					backgroundColor = convertHex(colors[Math.floor(Math.random() * colors.length)]);
@@ -124,11 +123,10 @@ document.addEventListener('DOMContentLoaded', function() {
 				});
 			}
 		})
-	};
-
+	}
 	Column.prototype = {
 		renameColumn: function(column) {
-			this.element = generateTemplate('column-template', {name: this.name, id: this.id});
+			this.element.innerHTML = generateTemplate('column-template', {name: this.name, id: this.id}).innerHTML;
 		},
 		addCard: function(card) {
 			this.element.querySelector('ul').appendChild(card.element);
@@ -180,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				});
 			}
 		});
-	};
+	}
 	Card.prototype = {
 		renameCard: function(card) {
 			this.element.querySelector('ul').appendChild(card.element);
@@ -214,8 +212,8 @@ document.addEventListener('DOMContentLoaded', function() {
     		group: 'kanban',
     		sort: true,
     			onAdd: function (event) {
-					var cardName = event.item.querySelector('.card-description').innerText
-					var columnId = event.target.id
+					var cardName = event.item.querySelector('.card-description').innerText;
+					var columnId = event.target.id;
 					var cardId = event.item.querySelector('.card').id;
 
 					fetch(baseUrl + '/card/' + cardId, {
@@ -229,8 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 				},
   		});
-	};
-
+	}
 	//button click event for adding more columns
 	document.querySelector('#board .create-column').addEventListener('click', function() {
     	
@@ -258,20 +255,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     		var hideModal = function() {
     			document.querySelector('#overlay').classList.remove('show');
-    		}
+    		};
     		document.querySelector('#overlay').addEventListener('click', hideModal);
 
     		document.addEventListener('keyup', function(e) {
   				if(e.keyCode === 27) {
     				hideModal();
-  				};
+				}
 			});
     		var modals = document.querySelectorAll('.modal');
     		for(var i = 0; i < modals.length; i++){
 				modals[i].addEventListener('click', function(event){
 					event.stopPropagation();
 				});
-			};
-    	}
+			}
+		}
 	});	
 });
