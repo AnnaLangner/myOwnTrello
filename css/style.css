@@ -12,7 +12,7 @@ body .board .column-container { margin: 0 auto; display: -ms-flexbox; display: f
 
 body .column { padding: 50px; -ms-flex: 1; flex: 1; width: 300px; }
 
-body .column .column-card-list { -ms-flex: 1; flex: 1; }
+body .column .column-card-list { -ms-flex: 1; flex: 1; min-height: 40px; }
 
 body .column .btn-delete { width: 20px; height: 20px; border-radius: 4px; color: #f9f7f4; background-color: #f29d15; border: 3px solid #db8804; }
 

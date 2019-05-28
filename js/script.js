@@ -103,9 +103,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 			if (event.target.classList.contains('btn-rename')) {
 				var columnName = prompt("Enter a new name");
-				event.preventDefault();
-				var data = new FormData();
-				data.append('name', columnName);
 
 				fetch(baseUrl + '/column/' + self.id, {
       				method: 'PUT',
@@ -118,15 +115,14 @@ document.addEventListener('DOMContentLoaded', function() {
     			  	return res.json();
     			})
     			.then(function(resp) {
-    				var column = new Column(resp.id, columnName);
-    				self.renameColumn(column);
+    				self.renameColumn(columnName);
 				});
 			}
 		})
 	}
 	Column.prototype = {
-		renameColumn: function(column) {
-			this.element.innerHTML = generateTemplate('column-template', {name: this.name, id: this.id}).innerHTML;
+		renameColumn: function(columnName) {
+			this.element.querySelector('.column-title').innerText = columnName
 		},
 		addCard: function(card) {
 			this.element.querySelector('ul').appendChild(card.element);
